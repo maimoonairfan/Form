@@ -1,5 +1,3 @@
-// databaseHelper.dart
-
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -21,7 +19,6 @@ class DatabaseHelper {
         nearest_LHVs_Contact_Number TEXT,
         health_Center_Code TEXT,
         name_of_LHW TEXT,
-        tehsil TEXT,
         village TEXT,
         PNC_Registration_Number TEXT,
         village_Population TEXT,
@@ -32,7 +29,9 @@ class DatabaseHelper {
         total_traditional_birth_attendants_in_the_area_of_CMW TEXT,
         emergency_transport_phone_number_of_the_area TEXT,
         total_health_Facilities_available_for_the_referral_in_the_area TEXT,
-        total_hospitals_available_for_the_referral_in_the_area TEXT
+        total_hospitals_available_for_the_referral_in_the_area TEXT,
+        district TEXT,  
+        tehsil TEXT
       )
     ''');
   }
