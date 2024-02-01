@@ -12,6 +12,8 @@ class Details extends StatefulWidget {
 class _DetailsState extends State<Details> {
   final DatabaseHelper dbHelper = DatabaseHelper();
 
+  List recordsReciveSave = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,12 +25,17 @@ class _DetailsState extends State<Details> {
           IconButton(
               onPressed: () async {
                 var recordsRecive = await dbHelper.selectData();
+                recordsReciveSave = recordsRecive as List;
+
                 print("detail screen result");
 
                 print("${recordsRecive}");
                 print("done");
+                setState(() {
+
+                });
               },
-              icon: Icon(Icons.more_vert))
+              icon: Icon(Icons.refresh))
         ],
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
@@ -37,9 +44,11 @@ class _DetailsState extends State<Details> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end, // Align to the bottom
           children: [
-            // ListView.builder(itemCount:,itemBuilder: ((context, index) =>ListTile(
-            //   title: Text(),
-            // ) )),
+            Expanded(
+              child: ListView.builder(itemCount: recordsReciveSave.length,itemBuilder: ((context, index) =>ListTile(
+                title: Text("${recordsReciveSave[index]["id"]} - ${recordsReciveSave[index]["name_of_CMW"]}"),
+              ) )),
+            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: SizedBox(
