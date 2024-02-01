@@ -11,8 +11,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final DatabaseHelper dbHelper = DatabaseHelper();
-
-  // Variables for text fields
   TextEditingController nameCMWController = TextEditingController();
   TextEditingController nearestHealthFacilityController =
       TextEditingController();
@@ -36,6 +34,8 @@ class _HomePageState extends State<HomePage> {
   TextEditingController totalHealthFacilitiesController =
       TextEditingController();
   TextEditingController totalHospitalsController = TextEditingController();
+  TextEditingController districtcontroller = TextEditingController();
+  TextEditingController tehsilController = TextEditingController();
 
   // Dropdown variables
   String selectedDropdown1 = 'Astore';
@@ -77,6 +77,13 @@ class _HomePageState extends State<HomePage> {
     'Gamba',
     'Roundu'
   ];
+  @override
+  void initState() {
+    super.initState();
+    print("sd sk");
+    dbHelper.initializeDatabase();
+    print("cd sk");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,10 +135,11 @@ class _HomePageState extends State<HomePage> {
                   totalHospitalsController),
 
               // Dropdowns
-              buildDropdownFormField(
-                  'District', selectedDropdown1, dropdownOptions),
-              buildDropdownFormField(
-                  'Tehsil', selectedDropdown2, dropdownOptionstehsil),
+              // Dropdowns
+              buildDropdownFormField('District', selectedDropdown1,
+                  dropdownOptions, districtcontroller),
+              buildDropdownFormField('Tehsil', selectedDropdown2,
+                  dropdownOptionstehsil, tehsilController),
 
               SizedBox(
                 height: 50.0,
@@ -139,28 +147,44 @@ class _HomePageState extends State<HomePage> {
                 child: TextButton(
                   onPressed: () async {
                     // Save form data to the database
-                    saveFormData();
+                    dbHelper.insertData(
+                        nameCMWController.text,
+                        nearestHealthFacilityController.text,
+                        nearestLHVsContactNumberController.text,
+                        healthCenterCodeController.text,
+                        nameLHWController.text,
+                        villageController.text,
+                        pncRegistrationNumberController.text,
+                        villagePopulationController.text,
+                        catchmentPopulationController.text,
+                        longestDistanceCMWController.text,
+                        catchmentPopulationController.text,
+                        totalPopulationLHWController.text,
+                        totalTraditionalBirthAttendantsController.text,
+                        emergencyTransportPhoneNumberController.text,
+                        totalHealthFacilitiesController.text,
+                        totalHospitalsController.text,
+                        districtcontroller.text,
+                        tehsilController.text);
 
                     // Navigate to the next screen to display the information
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Details()),
+                      MaterialPageRoute(builder: (context) => Details(
+                        
+                      )),
                     );
                   },
-                  child: TextButton(
-                      onPressed: () {
-                        print(DatabaseHelper.tableName);
-                      },
-                      child: Text('Submit',
-                          style: TextStyle(color: Colors.white))),
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.deepPurple,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
+                  child: Text('Submit', style: TextStyle(color: Colors.white)),
                 ),
               ),
+              
             ],
           ),
         ),
@@ -190,82 +214,46 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildDropdownFormField(
-      String label, String value, List<String> options) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8.0,
-        horizontal: 12,
-      ),
-      child: Column(
-        children: [
-          DropdownButtonFormField<String>(
-            value: value,
-            onChanged: (newValue) {
-              setState(() {
-                value = newValue!;
-              });
-            },
-            items: options
-                .map<DropdownMenuItem<String>>(
-                  (String option) => DropdownMenuItem<String>(
-                    value: option,
-                    child: Text(option),
-                  ),
-                )
-                .toList(),
-            decoration: InputDecoration(
-              labelText: label,
-              enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  width: 5,
-                  color: Colors.black26,
+  Widget buildDropdownFormField(String label, String selectedValue, List<String> options,TextEditingController controller) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(
+      vertical: 8.0,
+      horizontal: 12,
+    ),
+    child: Column(
+      children: [
+        DropdownButtonFormField<String>(
+          value: selectedValue,
+          onChanged: (newValue) {
+            // Update the dropdown value and the controller
+            setState(() {
+              selectedValue = newValue!;
+              controller.text = newValue; // Update the controller
+            });
+          },
+          items: options
+              .map<DropdownMenuItem<String>>(
+                (String option) => DropdownMenuItem<String>(
+                  value: option,
+                  child: Text(option),
                 ),
-                borderRadius: BorderRadius.circular(50.0),
+              )
+              .toList(),
+          decoration: InputDecoration(
+            labelText: label,
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                width: 5,
+                color: Colors.black26,
               ),
+              borderRadius: BorderRadius.circular(50.0),
             ),
           ),
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
-  }
+        ),
+        const SizedBox(height: 8),
+      ],
+    ),
+  );
+}
 
-  void saveFormData() async {
-    // Save form data to the database
-    await dbHelper.insertData('name_of_CMW', nameCMWController.text);
-    await dbHelper.insertData(
-        'nearest_Health_Facility', nearestHealthFacilityController.text);
-    await dbHelper.insertData(
-        'nearest_LHVs_Contact_Number', nearestLHVsContactNumberController.text);
-    await dbHelper.insertData(
-        'health_Center_Code', healthCenterCodeController.text);
-    await dbHelper.insertData('name_of_LHW', nameLHWController.text);
-    await dbHelper.insertData('village', villageController.text);
-    await dbHelper.insertData(
-        'PNC_Registration_Number', pncRegistrationNumberController.text);
-    await dbHelper.insertData(
-        'village_Population', villagePopulationController.text);
-    await dbHelper.insertData(
-        'catchment_Population', catchmentPopulationController.text);
-    await dbHelper.insertData(
-        'longest_distance_from_CMW', longestDistanceCMWController.text);
-    await dbHelper.insertData('no_of_LHW_in_Catchment_Population',
-        noLHWInCatchmentPopulationController.text);
-    await dbHelper.insertData(
-        'total_Population_of_LHW', totalPopulationLHWController.text);
-    await dbHelper.insertData(
-        'total_traditional_birth_attendants_in_the_area_of_CMW',
-        totalTraditionalBirthAttendantsController.text);
-    await dbHelper.insertData('emergency_transport_phone_number_of_the_area',
-        emergencyTransportPhoneNumberController.text);
-    await dbHelper.insertData(
-        'total_health_Facilities_available_for_the_referral_in_the_area',
-        totalHealthFacilitiesController.text);
-    await dbHelper.insertData(
-        'total_hospitals_available_for_the_referral_in_the_area',
-        totalHospitalsController.text);
-    await dbHelper.insertData('district', selectedDropdown1);
-    await dbHelper.insertData('tehsil', selectedDropdown2);
-  }
 }

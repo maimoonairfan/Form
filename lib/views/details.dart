@@ -1,3 +1,4 @@
+import 'package:application/db/databaseHelper.dart';
 import 'package:application/views/home.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,8 @@ class Details extends StatefulWidget {
 }
 
 class _DetailsState extends State<Details> {
-  TextEditingController data = TextEditingController();
+  final DatabaseHelper dbHelper = DatabaseHelper();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,6 +19,17 @@ class _DetailsState extends State<Details> {
         title: Text(
           'User Profile',
         ),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                var recordsRecive = await dbHelper.selectData();
+                print("detail screen result");
+
+                print("${recordsRecive}");
+                print("done");
+              },
+              icon: Icon(Icons.more_vert))
+        ],
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
       ),
@@ -24,6 +37,9 @@ class _DetailsState extends State<Details> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end, // Align to the bottom
           children: [
+            // ListView.builder(itemCount:,itemBuilder: ((context, index) =>ListTile(
+            //   title: Text(),
+            // ) )),
             Align(
               alignment: Alignment.bottomCenter,
               child: SizedBox(
@@ -44,6 +60,7 @@ class _DetailsState extends State<Details> {
                 ),
               ),
             ),
+            
           ],
         ),
       ),
