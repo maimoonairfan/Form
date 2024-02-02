@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:application/db/databaseHelper.dart';
 import 'package:application/views/home.dart';
 import 'package:flutter/material.dart';
@@ -31,9 +33,7 @@ class _DetailsState extends State<Details> {
 
                 print("${recordsRecive}");
                 print("done");
-                setState(() {
-
-                });
+                setState(() {});
               },
               icon: Icon(Icons.refresh))
         ],
@@ -45,9 +45,23 @@ class _DetailsState extends State<Details> {
           mainAxisAlignment: MainAxisAlignment.end, // Align to the bottom
           children: [
             Expanded(
-              child: ListView.builder(itemCount: recordsReciveSave.length,itemBuilder: ((context, index) =>ListTile(
-                title: Text("${recordsReciveSave[index]["id"]} - ${recordsReciveSave[index]["name_of_CMW"]}"),
-              ) )),
+              child: ListView.builder(
+                  itemCount: recordsReciveSave.length,
+                  itemBuilder: ((context, index) => ListTile(
+                        onTap: () {
+                          print("taped here");
+                          var sendData = jsonEncode(recordsReciveSave[index]);
+                          print(sendData);
+
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage(sendData: sendData.toString(), isSend: true,),));
+                          // HomePage();
+                        },
+                        title: Text(
+                            "${recordsReciveSave[index]["id"]} - ${recordsReciveSave[index]["name_of_CMW"]}"),
+                      ))),
             ),
             Align(
               alignment: Alignment.bottomCenter,
@@ -69,7 +83,6 @@ class _DetailsState extends State<Details> {
                 ),
               ),
             ),
-            
           ],
         ),
       ),

@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:application/db/databaseHelper.dart';
 import 'package:application/views/details.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final String sendData;
+  final bool isSend;
+  const HomePage({Key? key, this.sendData = "", this.isSend = false})
+      : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -83,6 +88,18 @@ class _HomePageState extends State<HomePage> {
     print("sd sk");
     dbHelper.initializeDatabase();
     print("cd sk");
+
+    if (widget.isSend == true) {
+      print("form data");
+
+      print(widget.sendData);
+
+      var formData = jsonDecode(widget.sendData);
+
+      nameCMWController.text = formData["name_of_CMW"];
+
+      print("done");
+    }
   }
 
   @override
@@ -170,9 +187,7 @@ class _HomePageState extends State<HomePage> {
                     // Navigate to the next screen to display the information
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Details(
-                        
-                      )),
+                      MaterialPageRoute(builder: (context) => Details()),
                     );
                   },
                   style: TextButton.styleFrom(
@@ -184,7 +199,6 @@ class _HomePageState extends State<HomePage> {
                   child: Text('Submit', style: TextStyle(color: Colors.white)),
                 ),
               ),
-              
             ],
           ),
         ),
@@ -214,46 +228,46 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildDropdownFormField(String label, String selectedValue, List<String> options,TextEditingController controller) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(
-      vertical: 8.0,
-      horizontal: 12,
-    ),
-    child: Column(
-      children: [
-        DropdownButtonFormField<String>(
-          value: selectedValue,
-          onChanged: (newValue) {
-            // Update the dropdown value and the controller
-            setState(() {
-              selectedValue = newValue!;
-              controller.text = newValue; // Update the controller
-            });
-          },
-          items: options
-              .map<DropdownMenuItem<String>>(
-                (String option) => DropdownMenuItem<String>(
-                  value: option,
-                  child: Text(option),
+  Widget buildDropdownFormField(String label, String selectedValue,
+      List<String> options, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 8.0,
+        horizontal: 12,
+      ),
+      child: Column(
+        children: [
+          DropdownButtonFormField<String>(
+            value: selectedValue,
+            onChanged: (newValue) {
+              // Update the dropdown value and the controller
+              setState(() {
+                selectedValue = newValue!;
+                controller.text = newValue; // Update the controller
+              });
+            },
+            items: options
+                .map<DropdownMenuItem<String>>(
+                  (String option) => DropdownMenuItem<String>(
+                    value: option,
+                    child: Text(option),
+                  ),
+                )
+                .toList(),
+            decoration: InputDecoration(
+              labelText: label,
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  width: 5,
+                  color: Colors.black26,
                 ),
-              )
-              .toList(),
-          decoration: InputDecoration(
-            labelText: label,
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                width: 5,
-                color: Colors.black26,
+                borderRadius: BorderRadius.circular(50.0),
               ),
-              borderRadius: BorderRadius.circular(50.0),
             ),
           ),
-        ),
-        const SizedBox(height: 8),
-      ],
-    ),
-  );
-}
-
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
 }
